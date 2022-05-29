@@ -11,11 +11,13 @@ namespace Integracion54
 		private List<UsuarioAdministrador> _usuarioAdministrador;
 		private List<Alumno> _alumno;
 		private List<Curso> _curso;
+		private List<AlumnoCurso> _alumnoCurso;
 		public Sistema()
 		{
 			this._usuarioAdministrador = new List<UsuarioAdministrador>();
 			this._alumno = new List<Alumno>();
 			this._curso = new List<Curso>();
+			this._alumnoCurso = new List<AlumnoCurso>();
 		}
 
 		public int BuscarUsuarioAdministradorNombre(string nombre)
@@ -53,7 +55,7 @@ namespace Integracion54
 						Console.Clear();
 
 						nombre = Validador.ValidarStringNoVacioUsuarioClave("\n\n Ingrese su Nombre ");
-						uA = new UsuarioAdministrador(nombre, this._alumno, this._curso);
+						uA = new UsuarioAdministrador(nombre, this._alumno, this._curso, this._alumnoCurso);
 						_usuarioAdministrador.Add(uA);
 						posUsuarioA = BuscarUsuarioAdministradorNombre(nombre);
 
@@ -61,9 +63,10 @@ namespace Integracion54
 						if (posUsuarioA != -1)
 						{
 
-							_usuarioAdministrador[posUsuarioA].MenuAdministrador(this._alumno, this._curso);
+							_usuarioAdministrador[posUsuarioA].MenuAdministrador(this._alumno, this._curso, this._alumnoCurso);
 							this._alumno = _usuarioAdministrador[posUsuarioA].Alumno;
 							this._curso = _usuarioAdministrador[posUsuarioA].Curso;
+							this._alumnoCurso = _usuarioAdministrador[posUsuarioA].AlumnoCurso;
 							Validador.VolverMenu();
 						}
 						break;

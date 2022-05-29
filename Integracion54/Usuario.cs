@@ -36,12 +36,9 @@ namespace Integracion54
 
         protected abstract void DarAltaPersona();
 
-        protected abstract void DarBajaPersona();
+        protected abstract void DarBajaCursoAlumno();
 
-        protected abstract void GrabarPersonaAgenda();
-
-        protected abstract void LeerAgenda();
-
+        
         protected abstract void DarAltaCurso();
 
         protected abstract void AsignarCursoAlumno();

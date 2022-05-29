@@ -11,6 +11,7 @@ namespace Integracion54
 	{
 		protected List<Alumno> _alumno;
 		protected List<Curso> _curso;
+		protected List<AlumnoCurso> _alumnoCurso;
 
 		public List<Alumno> Alumno
 		{
@@ -23,19 +24,26 @@ namespace Integracion54
 			get { return this._curso; }
 			set { this._curso = value; }
 		}
+		public List<AlumnoCurso> AlumnoCurso
+		{
+			get { return this._alumnoCurso; }
+			set { this._alumnoCurso = value; }
+		}
 
-		public UsuarioAdministrador(string nombre, List<Alumno> alumno, List<Curso> curso) : base(nombre)
+		public UsuarioAdministrador(string nombre, List<Alumno> alumno, List<Curso> curso, List<AlumnoCurso> alumnoCurso) : base(nombre)
 		{
 			this._alumno = alumno;
 			this._curso = curso;
+			this._alumnoCurso = alumnoCurso;
 		}
 
 
-		public void MenuAdministrador(List<Alumno> alumno, List<Curso> curso)
+		public void MenuAdministrador(List<Alumno> alumno, List<Curso> curso, List<AlumnoCurso> alumnoCurso)
 		{
 
 			Alumno = alumno;
 			Curso = curso;
+			AlumnoCurso = alumnoCurso;
 
 			int opcion;
 			do
@@ -66,13 +74,16 @@ namespace Integracion54
 						AsignarCursoAlumno();
 						break;
 					case 4:
-						LeerAgenda();
+						DarBajaCursoAlumno();
 						break;
 					case 5:
+						VerAlumnoCurso();
 						break;
 					case 6:
+						VerCursoAsignadoAlumno();
 						break;
 					case 7:
+						VerCantidadAlumnosCurso();
 						break;
 					case 8:
 						break;
@@ -106,9 +117,125 @@ namespace Integracion54
 			return -1;
 		}
 
-		Dictionary<int, Alumno> personaAgenda = new Dictionary<int, Alumno>();
+		public int BuscarAlumnoCurso(int codigoCurso)
+		{
+			for (int i = 0; i < this._alumnoCurso.Count; i++)
+			{
+				if (this._alumnoCurso[i].CodigoAlumnoPivot == codigoCurso)
+				{
+					return i;
+				}
+			}
+			/* si no encuentro el producto retorno una posición invalida */
+			return -1;
+		}
 
-		Dictionary<int, Curso> cursoDiccionario = new Dictionary<int, Curso>();
+		public int BuscarAlumnoCursoCantidad(int codigoCurso)
+		{
+			for (int i = 0; i < this._alumnoCurso.Count; i++)
+			{
+				if (this._alumnoCurso[i].CodigoCursoPivot == codigoCurso)
+				{
+					return i;
+				}
+			}
+			/* si no encuentro el producto retorno una posición invalida */
+			return -1;
+		}
+
+		public void AddPersona(Alumno alumno)
+		{
+			this._alumno.Add(alumno);
+		}
+
+		public void AddCurso(Curso curso)
+		{
+			this._curso.Add(curso);
+		}
+
+		public void AddAlumnoCurso(AlumnoCurso alumnoCurso)
+		{
+			this._alumnoCurso.Add(alumnoCurso);
+		}
+
+		public void RemoverAlumnoCurso(int pos)
+		{
+			this._alumnoCurso.RemoveAt(pos);
+		}
+
+		public void VerPersona()
+		{
+			Console.Clear();
+			Console.WriteLine("\n Alumnos Registrados");
+			Console.WriteLine(" #\tRegistro.\t\tNombre.\t\tApellido.");
+			for (int i = 0; i < Alumno.Count; i++)
+			{
+				Console.Write(" " + (i + 1));
+				Console.Write("\t");
+				Console.Write(Alumno[i].Registro);
+				Console.Write("\t\t");
+				Console.Write(Alumno[i].Nombre);
+				Console.Write("\t\t");
+				Console.Write(Alumno[i].Apellido);
+				Console.Write("\t\t");
+
+				Console.Write("\n");
+			}
+
+		}
+
+		public void VerCurso()
+		{
+			Console.Clear();
+			Console.WriteLine("\n Lista de Cursos");
+			Console.WriteLine(" #.\t\tCódigo de Curso.\t\tNombre del Curso.");
+			for (int i = 0; i < Curso.Count; i++)
+			{
+				Console.Write(" " + (i + 1));
+				Console.Write("\t\t");
+				Console.Write(Curso[i].CodigoCurso);
+				Console.Write("\t\t\t");
+				Console.Write(Curso[i].NombreCurso);
+				Console.Write("\n");
+			}
+
+		}
+
+		public void VerAlumnoCurso()
+		{
+			Console.Clear();
+			Console.WriteLine("\n Lista de Alumnos en Cursos");
+			Console.WriteLine(" #.\t\tCódigo de Alumno.\t\tCódigo del Curso.");
+			for (int i = 0; i < AlumnoCurso.Count; i++)
+			{
+				Console.Write(" " + (i + 1));
+				Console.Write("\t\t");
+				Console.Write(AlumnoCurso[i].CodigoCursoPivot);
+				Console.Write("\t");
+				Console.Write(AlumnoCurso[i].CodigoAlumnoPivot);
+				Console.Write("\t");
+				Console.Write(AlumnoCurso[i].AlumnoNombrePivot);
+				Console.Write("\t");
+				Console.Write(AlumnoCurso[i].ApellidoNombrePivot);
+				Console.Write("\t");
+				Console.Write(AlumnoCurso[i].CursoNombrePivot);
+
+				Console.Write("\n");
+			}
+
+		}
+
+
+
+		public void Prueba(int registroAlumno, int registroCurso)
+		{
+
+			Console.Write("\n Nombre de Alumno Inscrito : " + Alumno[BuscarPersonaDni(registroAlumno)].Nombre +
+						  " " + Alumno[BuscarPersonaDni(registroAlumno)].Apellido);
+			Console.WriteLine("\n Nombre de Curso Inscrito: " + Curso[BuscarCurso(registroCurso)].NombreCurso);
+
+		}
+
 
 		protected override void DarAltaPersona()
 		{
@@ -134,9 +261,9 @@ namespace Integracion54
 				{
 					Alumno p = new Alumno(registro, nombre, apellido);
 					AddPersona(p);
-					personaAgenda.Add(registro, p);
+					
 					VerPersona();
-					VerPersonaDiccionario();
+					
 					Console.WriteLine("\n Alumno con Registro *" + registro + " y nombre *" + nombre + "* agregado exitósamente");
 					Validador.VolverMenu();
 				}
@@ -185,9 +312,9 @@ namespace Integracion54
 				{
 					Curso p = new Curso(registro, nombreCurso);
 					AddCurso(p);
-					cursoDiccionario.Add(registro, p);
+					
 					VerCurso();
-					VerCursoDiccionario();
+					
 					Console.WriteLine("\n Curso con Código *" + registro + " y nombre *" + nombreCurso + "* agregado exitósamente");
 					Validador.VolverMenu();
 				}
@@ -214,13 +341,16 @@ namespace Integracion54
 		protected override void AsignarCursoAlumno()
 		{
 			int registroAlumno;
-
 			int registroCurso;
 
+			string nombreAlumnoCurso;
+			string apellidoAlumnoCurso;
+			string nombreCursoAlumnoCurso;
 
 			string opcion;
 
 			Console.Clear();
+			VerPersona();
 			registroAlumno = Validador.PedirIntMenu("\n Ingrese el código del Alumno a Registrar. El valor debe ser entre ", 0, 999999);
 			if (BuscarPersonaDni(registroAlumno) != -1)
 			{
@@ -234,12 +364,18 @@ namespace Integracion54
 
 					if (opcion == "SI")
 					{
-						AlumnoCurso pa = new AlumnoCurso(registroAlumno, registroCurso);
+						nombreAlumnoCurso = Alumno[BuscarPersonaDni(registroAlumno)].Nombre;
+						apellidoAlumnoCurso = Alumno[BuscarPersonaDni(registroAlumno)].Apellido;
+						nombreCursoAlumnoCurso = Curso[BuscarCurso(registroCurso)].NombreCurso;
 
-						Curso pe = new Curso();
-						pe.AddAlumnoCurso(pa);
+						AlumnoCurso pa = new AlumnoCurso(registroCurso, registroAlumno,nombreAlumnoCurso,
+							                             apellidoAlumnoCurso,nombreCursoAlumnoCurso);
 
-						Console.WriteLine("\n Curso con Código *" + registroAlumno + " y nombre *" + registroCurso + "* agregado exitósamente");
+						AddAlumnoCurso(pa);
+
+						VerAlumnoCurso();
+						Prueba(registroAlumno,registroCurso);
+						Console.WriteLine("\n Curso con Código *" + registroAlumno + " y Registro de Alumno *" + registroCurso + "* agregado exitósamente");
 						Validador.VolverMenu();
 					}
 					else
@@ -276,51 +412,35 @@ namespace Integracion54
 
 		}
 
-		public void AddPersona(Alumno alumno)
-		{
-			this._alumno.Add(alumno);
-		}
 
-		public void AddCurso(Curso curso)
+		protected override void DarBajaCursoAlumno()
 		{
-			this._curso.Add(curso);
-		}
-
-		
-		public void RemoverPersona(int pos)
-		{
-			this._alumno.RemoveAt(pos);
-		}
-
-		protected override void DarBajaPersona()
-		{
-			int dni;
+			int registroAlumno;
 			string confirmacion;
 
 			VerPersona();
-			dni = Validador.PedirIntMenu("\n Ingrese el DNI de la Persona a agregar. El valor debe ser entre ", 0, 99999999);
+			registroAlumno = Validador.PedirIntMenu("\n Ingrese el Registro del Alumno. El valor debe ser entre ", 0, 99999999);
 
 
-			if (BuscarPersonaDni(dni) != -1)
+			if (BuscarAlumnoCurso(registroAlumno) != -1)
 			{
 
-				VerPersona();
+				VerAlumnoCurso();
 
-				confirmacion = ValidarSioNoPersonaCreada("\n\n Está seguro que desea eliminar esta Persona?", dni);
+				confirmacion = ValidarSioNoPersonaCreada("\n\n Está seguro que desea designar el curso al Alumno?",registroAlumno);
 
 				if (confirmacion == "SI")
 				{
-					personaAgenda.Remove(dni);
-					RemoverPersona(BuscarPersonaDni(dni));
-					VerPersona();
-
-					VerPersonaDiccionario();
-					Console.WriteLine("\n Persona eliminada exitósamente");
+					RemoverAlumnoCurso(BuscarAlumnoCurso(registroAlumno));
+										
+					VerAlumnoCurso();
+					
+					Console.WriteLine("\n Curso del Alumno Desasignado");
 					Validador.VolverMenu();
 				}
 				else
 				{
-					VerPersona();
+					VerAlumnoCurso();
 					Console.WriteLine("\n Como puede apreciar la Persona no ha sido eliminada");
 					Validador.VolverMenu();
 				}
@@ -330,7 +450,7 @@ namespace Integracion54
 			{
 				Console.Clear();
 				VerPersona();
-				Console.WriteLine("\n No existe una Persona con este Dni *" + dni + "*. " +
+				Console.WriteLine("\n No existe una Persona con este Dni *" +registroAlumno + "*. " +
 								  "\n\n Vuelva a intentarlo ingresando el valor de uno de los DNI que ve en la lista " +
 								  "la siguiente vez");
 				Validador.VolverMenu();
@@ -338,53 +458,80 @@ namespace Integracion54
 
 		}
 
-		protected override void GrabarPersonaAgenda()
-		{
-			using (var archivoAgenda = new FileStream("archivoAgenda.txt", FileMode.Create))
-			{
-				using (var archivoEscrituraAgenda = new StreamWriter(archivoAgenda))
-				{
-					foreach (var persona in personaAgenda.Values)
-					{
+		public void VerCursoAsignadoAlumno()
+        {
+			int registroAlumno;
+			
 
-						var linea = "\n Registro del Alumnoa: " + persona.Registro +
-									"\n Nombre de la Persona: " + persona.Nombre +
-									"\n Apellido de la Persona: " + persona.Apellido;
-						archivoEscrituraAgenda.WriteLine(linea);
-
-					}
-
-				}
-			}
 			VerPersona();
-			Console.WriteLine("Se ha grabado los datos de las personas en la Agenda correctamente");
-			Validador.VolverMenu();
+			registroAlumno = Validador.PedirIntMenu("\n Ingrese el Registro del Alumno. El valor debe ser entre ", 0, 99999999);
+
+			Console.Clear();
+			if (BuscarAlumnoCurso(registroAlumno) != -1)
+			{
+				Console.WriteLine("\n Alumno con registro *" + registroAlumno + "*. Inscrito en:");
+				for (int i = 0; i < this._alumnoCurso.Count; i++)
+				{
+					if (this._alumnoCurso[i].CodigoAlumnoPivot == registroAlumno)
+					{
+						Console.WriteLine("\n Curso: " + AlumnoCurso[i].CursoNombrePivot);
+					}
+				}
+						
+				Validador.VolverMenu();
+
+			}
+			else
+			{
+				Console.Clear();
+				VerPersona();
+				Console.WriteLine("\n No existe un Alumno con este Registro *" + registroAlumno + "*. " +
+								  "\n\n Vuelva a intentarlo ingresando el valor de un registro que vea en la lista");
+				Validador.VolverMenu();
+			}
 
 		}
 
-		protected override void LeerAgenda()
+		public void VerCantidadAlumnosCurso()
 		{
+			int registroCurso;
+			int contador = 0;
+
+			VerCurso();
+			registroCurso = Validador.PedirIntMenu("\n Ingrese el Registro del Curso. El valor debe ser entre ", 0, 99999999);
+
 			Console.Clear();
-			Console.WriteLine("\n Personas en la agenda: ");
-			using (var archivoAgenda = new FileStream("archivoAgenda.txt", FileMode.Open))
+			if (BuscarAlumnoCursoCantidad(registroCurso) != -1)
 			{
-				using (var archivoLecturaAgenda = new StreamReader(archivoAgenda))
+				Console.WriteLine("\n Curso con Código *" + registroCurso + "*. tiene:");
+				for (int i = 0; i < this._alumnoCurso.Count; i++)
 				{
-					foreach (var persona in personaAgenda.Values)
+
+					if (this._alumnoCurso[i].CodigoCursoPivot == registroCurso)
 					{
-
-
-						Console.WriteLine(archivoLecturaAgenda.ReadToEnd());
-
-
+						
+						contador++;
 					}
 
 				}
+				Console.WriteLine("\n " + contador +" Alumnos. " );
+
+				Validador.VolverMenu();
+
 			}
-			Validador.VolverMenu();
+			else
+			{
+				Console.Clear();
+				VerCurso();
+				Console.WriteLine("\n No existe un Curso con este Registro *" + registroCurso + "*. " +
+								  "\n\n Vuelva a intentarlo ingresando el valor de un registro que vea en la lista");
+				Validador.VolverMenu();
+			}
 
 		}
 
+
+		/* Validadores de Clase */
 		protected string ValidarSioNoPersonaCreada(string mensaje, int dni)
 		{
 
@@ -609,83 +756,10 @@ namespace Integracion54
 			return opcion;
 		}
 
-		public void VerPersona()
-		{
-			Console.Clear();
-			Console.WriteLine("\n Personas en Agenda");
-			Console.WriteLine(" #\tRegistro.\t\tNombre.\t\tApellido.");
-			for (int i = 0; i < Alumno.Count; i++)
-			{
-				Console.Write(" " + (i + 1));
-				Console.Write("\t");
-				Console.Write(Alumno[i].Registro);
-				Console.Write("\t\t");
-				Console.Write(Alumno[i].Nombre);
-				Console.Write("\t\t");
-				Console.Write(Alumno[i].Apellido);
-				Console.Write("\t\t");
-				
-				Console.Write("\n");
-			}
+		
+		
 
-		}
-
-		public void VerCurso()
-		{
-			Console.Clear();
-			Console.WriteLine("\n Lista de Cursos");
-			Console.WriteLine(" #\t.\t\tCódigo.\t\tCurso.");
-			for (int i = 0; i < Curso.Count; i++)
-			{
-				Console.Write(" " + (i + 1));
-				Console.Write("\t");
-				Console.Write(Curso[i].CodigoCurso);
-				Console.Write("\t\t");
-				Console.Write(Curso[i].NombreCurso);
-				Console.Write("\t\t");
-				
-
-				Console.Write("\n");
-			}
-
-		}
-
-		public void VerPersonaDiccionario()
-		{
-			Console.WriteLine("\n Personas en el Diccionario");
-			for (int i = 0; i < personaAgenda.Count; i++)
-			{
-				KeyValuePair<int, Alumno> persona = personaAgenda.ElementAt(i);
-
-				Console.WriteLine("\n Dni: " + persona.Key);
-				Alumno personaValor = persona.Value;
-
-				Console.WriteLine(" Nombre Persona: " + personaValor.Registro);
-				Console.WriteLine(" Apellido Persona: " + personaValor.Nombre);
-				Console.WriteLine(" Telefono Persona: " + personaValor.Apellido);
-				
-
-			}
-
-
-		}
-
-		public void VerCursoDiccionario()
-		{
-			Console.WriteLine("\n Curso en el Diccionario");
-			for (int i = 0; i < cursoDiccionario.Count; i++)
-			{
-				KeyValuePair<int, Curso> curso = cursoDiccionario.ElementAt(i);
-
-				Console.WriteLine("\n Código del Curso: " + curso.Key);
-				Curso cursoValor = curso.Value;
-
-				Console.WriteLine(" Nombre del Curso: " + cursoValor.NombreCurso);
-				
-			}
-
-
-		}
+		
 
 
 
