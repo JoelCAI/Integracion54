@@ -86,6 +86,7 @@ namespace Integracion54
 						VerCantidadAlumnosCurso();
 						break;
 					case 8:
+						VerCantidadCursosPorAlumno();
 						break;
 				}
 			} while (opcion != 5);
@@ -142,6 +143,7 @@ namespace Integracion54
 			/* si no encuentro el producto retorno una posición invalida */
 			return -1;
 		}
+
 
 		public void AddPersona(Alumno alumno)
 		{
@@ -524,6 +526,44 @@ namespace Integracion54
 				Console.Clear();
 				VerCurso();
 				Console.WriteLine("\n No existe un Curso con este Registro *" + registroCurso + "*. " +
+								  "\n\n Vuelva a intentarlo ingresando el valor de un registro que vea en la lista");
+				Validador.VolverMenu();
+			}
+
+		}
+
+		public void VerCantidadCursosPorAlumno()
+		{
+			int registroAlumno;
+			int contador = 0;
+
+			VerCurso();
+			registroAlumno = Validador.PedirIntMenu("\n Ingrese el Registro del Alumno. El valor debe ser entre ", 0, 99999999);
+
+			Console.Clear();
+			if (BuscarAlumnoCurso(registroAlumno) != -1)
+			{
+				Console.WriteLine("\n Alumno con Registro *" + registroAlumno + "*. tiene:");
+				for (int i = 0; i < this._alumnoCurso.Count; i++)
+				{
+
+					if (this._alumnoCurso[i].CodigoAlumnoPivot == registroAlumno)
+					{
+
+						contador++;
+					}
+
+				}
+				Console.WriteLine("\n " + contador + " cursos. ");
+
+				Validador.VolverMenu();
+
+			}
+			else
+			{
+				Console.Clear();
+				VerCurso();
+				Console.WriteLine("\n No existe un Alumno con este Registro *" + registroAlumno + "*. " +
 								  "\n\n Vuelva a intentarlo ingresando el valor de un registro que vea en la lista");
 				Validador.VolverMenu();
 			}
